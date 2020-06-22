@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "..\\..\\.."
+		},
+		{
+			"path": "D:\\files\\n3-17-15-styles\\chat-app\\public\\img"
+		},
+		{
+			"path": "D:\\files\\n3-17-15-styles\\chat-app\\public\\css"
+		}
+	],
+	"settings": {
+		"files.autoSave": "onWindowChange"
+	}
+}

@@ -6,27 +6,38 @@ const path = require('path')
 const port = 3000 || process.env.PORT
 const socketIo = require('socket.io')
 const io = socketIo(server)
-
+const Filter = require('bad-words')
+const { generateMessage } = require('./utils/messages')
 app.use(express.static(path.join(__dirname, '../public')))
-let count = 0
+
 io.on('connection', (socket) => {
-    socket.broadcast.emit('message', "user logged in!")
-    socket.on('message', (message) => {
-        console.log(message)
-        io.emit('message', message)
+
+
+    socket.on('join', ({ username, room }) => {
+        socket.join(room)
+        socket.emit('message', generateMessage("Welcome"))
+        socket.broadcast.to(room).emit('message', generateMessage(`${username} has just joined the chat`))
     })
-    socket.on('sendLocation', (message) => {
-        io.emit("message", `https://google.com/maps?q=${message.lat},${message.long}`)
+    socket.on('sendMessage', (message, callback) => {
+        console.log(message)
+        io.emit('message', generateMessage(message))
+        callback()
+
+    })
+    socket.on('sendLocation', (message, callback) => {
+        io.emit("locationUpdate", generateMessage(`https://google.com/maps?q=${message.lat},${message.long}`))
+        callback()
     })
     socket.on('disconnect', () => {
-        io.emit("message", "User has left")
+        io.emit("message", generateMessage("A user has left the chat"))
     })
 })
 
 
 
 
+
+
 server.listen(port, () => {
-    count++;
     console.log("Server is up and running on port " + port)
 })
